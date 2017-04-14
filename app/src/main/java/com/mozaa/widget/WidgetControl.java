@@ -60,6 +60,10 @@ public class WidgetControl {
         initializeLayoutCoordinator();
     }
 
+    public Activity getContext () {
+        return mContext;
+    }
+
     public void showWidget () {
         if (widgetView.getWindowToken() != null && isWidgetShowing) {
             return;
@@ -130,7 +134,6 @@ public class WidgetControl {
         widgetTrashView.setVisibility(View.GONE);
         LayoutInflater.from(mContext).inflate(widgetTrashResourceId, widgetTrashView, true);
         getWindowManager().addView(this.widgetTrashView, buildLayoutParamsForTrash());
-        widgetTrashView.setBackgroundColor(0xFF00FF00);
 
     }
 

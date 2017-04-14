@@ -46,32 +46,43 @@ public class WidgetLayoutCoordinator {
 
     private void applyTrashMagnetismToBubble(WidgetView bubble) {
 
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-        windowManager.getDefaultDisplay().getMetrics(displayMetrics);
-        int height = displayMetrics.heightPixels;
-        int width = displayMetrics.widthPixels;
-
         View trashContentView = getTrashContent();
         int trashCenterX = (trashContentView.getLeft() + (trashContentView.getMeasuredWidth() / 2));
-        int trashCenterY = height- trashView.getMeasuredHeight()/2;
         int x = (trashCenterX - (bubble.getMeasuredWidth() / 2));
-        int y = (trashCenterY - bubble.getMeasuredHeight());
+
+        int[] loc = new int[2];
+        trashView.getLocationOnScreen(loc);
+        int trashCenterY = loc[1] + trashView.getHeight()/2;
+        int y = (trashCenterY  - bubble.getMeasuredHeight()/2) - getStatusBarHeight();
+
+        boolean isFullScreen = (widgetControl.getContext().getWindow().getAttributes().flags
+                & WindowManager.LayoutParams.FLAG_FULLSCREEN) != 0;
+        if (isFullScreen) {
+            y = (trashCenterY  - bubble.getMeasuredHeight()/2);
+        }
 
         bubble.getViewParams().x = x;
         bubble.getViewParams().y = y;
         windowManager.updateViewLayout(bubble, bubble.getViewParams());
     }
 
+    public int getStatusBarHeight() {
+        int result = 0;
+        int resourceId = widgetControl.getContext().getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            result = widgetControl.getContext().getResources().getDimensionPixelSize(resourceId);
+        }
+        return result;
+    }
+
+
     private boolean checkIfBubbleIsOverTrash(WidgetView bubble) {
         boolean result = false;
         if (trashView.getVisibility() == View.VISIBLE) {
             View trashContentView = getTrashContent();
             int trashWidth = trashContentView.getMeasuredWidth();
-            int trashHeight = trashContentView.getMeasuredHeight();
             int trashLeft = (trashContentView.getLeft() - (trashWidth / 2));
             int trashRight = (trashContentView.getLeft() + trashWidth + (trashWidth / 2));
-            int trashTop = (trashContentView.getTop() - (trashHeight / 2));
-            int trashBottom = (trashContentView.getTop() + trashHeight + (trashHeight / 2));
             int bubbleWidth = bubble.getMeasuredWidth();
             int bubbleHeight = bubble.getMeasuredHeight();
             int bubbleLeft = bubble.getViewParams().x;
@@ -79,19 +90,19 @@ public class WidgetLayoutCoordinator {
             int bubbleTop = bubble.getViewParams().y;
             int bubbleBottom = bubbleTop + bubbleHeight;
 
-            DisplayMetrics displayMetrics = new DisplayMetrics();
-            windowManager.getDefaultDisplay().getMetrics(displayMetrics);
-            int height = displayMetrics.heightPixels;
+            int[] loc = new int[2];
+            trashContentView.getLocationOnScreen(loc);
+            int trashTop = loc[1] - getStatusBarHeight() - bubble.getMeasuredHeight()/2;
 
-            trashTop = height - trashView.getHeight() - trashHeight/2;
+            boolean isFullScreen = (widgetControl.getContext().getWindow().getAttributes().flags
+                    & WindowManager.LayoutParams.FLAG_FULLSCREEN) != 0;
+            if (isFullScreen) {
+                trashTop = loc[1] - bubble.getMeasuredHeight()/2;
+            }
             Log.e(TAG, " trashTop: " + trashTop + ", bubble Top: " + bubbleTop);
 
-            trashBottom = trashContentView.getBottom();
-            bubbleBottom = height - bubble.getViewParams().y;
-            Log.e(TAG, " trash bottom: " + trashBottom + ", bubble Bottom: " + bubbleBottom);
-
             if (bubbleLeft >= trashLeft && bubbleRight <= trashRight) {
-                if (bubbleTop >= trashTop && bubbleBottom >= trashBottom) {
+                if (bubbleTop >= trashTop) {
                     result = true;
                 }
             }

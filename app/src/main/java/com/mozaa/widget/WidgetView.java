@@ -23,7 +23,7 @@ import com.mozaa.demobubbleinsideapp.R;
 public class WidgetView extends WidgetBaseLayout {
 
     private final String TAG = WidgetView.class.getName();
-    private static final int TOUCH_TIME_THRESHOLD = 100;
+    private static final int TOUCH_TIME_THRESHOLD = 150;
     private final float ALPHA_DIM = 0.7F;
     private final int ALPHA_GRAVITY = 50;
     private final int DURATION_DIM = 400;
@@ -95,7 +95,9 @@ public class WidgetView extends WidgetBaseLayout {
                     getViewParams().y = y;
                     getWindowManager().updateViewLayout(this, getViewParams());
                     if (getLayoutCoordinator() != null) {
-                        getLayoutCoordinator().notifyBubblePositionChanged(this, x, y);
+                        if (System.currentTimeMillis() - lastTouchDown > TOUCH_TIME_THRESHOLD) {
+                            getLayoutCoordinator().notifyBubblePositionChanged(this, x, y);
+                        }
                     }
                     break;
                 case MotionEvent.ACTION_UP:
