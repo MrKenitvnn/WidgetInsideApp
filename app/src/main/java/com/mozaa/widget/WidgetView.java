@@ -14,7 +14,7 @@ import android.util.Log;
 import android.view.Display;
 import android.view.MotionEvent;
 import android.view.WindowManager;
-import mozaa.demobubbleinsideapp.R;
+import com.mozaa.demobubbleinsideapp.R;
 
 /**
  * Created by HN on 10/04/2017.

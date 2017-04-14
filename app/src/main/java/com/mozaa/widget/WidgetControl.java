@@ -61,7 +61,7 @@ public class WidgetControl {
     }
 
     public void showWidget () {
-        if (isWidgetShowing) {
+        if (widgetView.getWindowToken() != null && isWidgetShowing) {
             return;
         }
         DisplayMetrics displaymetrics = new DisplayMetrics();
@@ -111,18 +111,14 @@ public class WidgetControl {
 
     private WindowManager.LayoutParams buildLayoutParamsForTrash() {
 
-        int x = 0;
-        int y = 0;
-
         WindowManager.LayoutParams params = new WindowManager.LayoutParams(
                 WindowManager.LayoutParams.MATCH_PARENT,
-                WindowManager.LayoutParams.MATCH_PARENT,
+                WindowManager.LayoutParams.WRAP_CONTENT,
                 WindowManager.LayoutParams.TYPE_APPLICATION,
                 WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
                 PixelFormat.TRANSPARENT);
 
-        params.x = x;
-        params.y = y;
+        params.gravity = Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL;
 
         return params;
     }
@@ -134,6 +130,7 @@ public class WidgetControl {
         widgetTrashView.setVisibility(View.GONE);
         LayoutInflater.from(mContext).inflate(widgetTrashResourceId, widgetTrashView, true);
         getWindowManager().addView(this.widgetTrashView, buildLayoutParamsForTrash());
+        widgetTrashView.setBackgroundColor(0xFF00FF00);
 
     }
 

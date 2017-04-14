@@ -1,5 +1,6 @@
 package com.mozaa.widget;
 
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -44,11 +45,18 @@ public class WidgetLayoutCoordinator {
     }
 
     private void applyTrashMagnetismToBubble(WidgetView bubble) {
+
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        windowManager.getDefaultDisplay().getMetrics(displayMetrics);
+        int height = displayMetrics.heightPixels;
+        int width = displayMetrics.widthPixels;
+
         View trashContentView = getTrashContent();
         int trashCenterX = (trashContentView.getLeft() + (trashContentView.getMeasuredWidth() / 2));
-        int trashCenterY = (trashContentView.getTop() + (trashContentView.getMeasuredHeight() / 2));
+        int trashCenterY = height- trashView.getMeasuredHeight()/2;
         int x = (trashCenterX - (bubble.getMeasuredWidth() / 2));
-        int y = (trashCenterY - (bubble.getMeasuredHeight() / 2));
+        int y = (trashCenterY - bubble.getMeasuredHeight());
+
         bubble.getViewParams().x = x;
         bubble.getViewParams().y = y;
         windowManager.updateViewLayout(bubble, bubble.getViewParams());
@@ -71,18 +79,26 @@ public class WidgetLayoutCoordinator {
             int bubbleTop = bubble.getViewParams().y;
             int bubbleBottom = bubbleTop + bubbleHeight;
 
-            Log.e(TAG, "trashWith: " + trashWidth + ", trashHeight: " + trashHeight
-                    + ", trashLeft: " + trashLeft + ", right: " + trashRight
-                    + ", trashTop: " + trashTop + ", trashBottom: " + trashBottom);
+            DisplayMetrics displayMetrics = new DisplayMetrics();
+            windowManager.getDefaultDisplay().getMetrics(displayMetrics);
+            int height = displayMetrics.heightPixels;
+
+            trashTop = height - trashView.getHeight() - trashHeight/2;
+            Log.e(TAG, " trashTop: " + trashTop + ", bubble Top: " + bubbleTop);
+
+            trashBottom = trashContentView.getBottom();
+            bubbleBottom = height - bubble.getViewParams().y;
+            Log.e(TAG, " trash bottom: " + trashBottom + ", bubble Bottom: " + bubbleBottom);
 
             if (bubbleLeft >= trashLeft && bubbleRight <= trashRight) {
-                if (bubbleTop >= trashTop && bubbleBottom <= trashBottom) {
+                if (bubbleTop >= trashTop && bubbleBottom >= trashBottom) {
                     result = true;
                 }
             }
         }
         return result;
     }
+
 
     public void notifyBubbleRelease(WidgetView bubble) {
         if (trashView != null) {

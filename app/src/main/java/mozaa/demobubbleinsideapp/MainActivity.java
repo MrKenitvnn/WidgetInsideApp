@@ -8,6 +8,7 @@ import android.widget.Toast;
 import com.mozaa.widget.OnWidgetClickListener;
 import com.mozaa.widget.OnWidgetRemoveListener;
 import com.mozaa.widget.WidgetManager;
+import com.mozaa.demobubbleinsideapp.R;
 
 public class MainActivity extends AppCompatActivity implements OnWidgetClickListener, OnWidgetRemoveListener{
 

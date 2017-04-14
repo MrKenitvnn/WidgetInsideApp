@@ -5,7 +5,7 @@ import android.animation.AnimatorSet;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.util.Log;
-import mozaa.demobubbleinsideapp.R;
+import com.mozaa.demobubbleinsideapp.R;
 
 /**
  * Created by HN on 11/04/2017.
